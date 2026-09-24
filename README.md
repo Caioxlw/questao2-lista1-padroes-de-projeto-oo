@@ -10,6 +10,48 @@ O desafio consiste em adaptar o código inicial de um pacote de telefone para qu
 
 O projeto implementa o padrão **Observer** para criar uma relação de "Publicador-Assinante" entre os dados do telefone e a tela, removendo qualquer acoplamento direto.
 
+### Diagrama de Classes
+
+```mermaid
+classDiagram
+    class Observer {
+        <<interface>>
+        +update(newDigit: int) void
+    }
+    
+    class PhoneModel {
+        -digits: List~Integer~
+        -observers: List~Observer~
+        +addObserver(observer: Observer) void
+        +addDigit(newDigit: int) void
+        -notifyObservers(newDigit: int) void
+        +getDigits() List~Integer~
+    }
+    
+    class Screen {
+        -model: PhoneModel
+        +Screen(model: PhoneModel)
+    }
+    
+    class KeyPad {
+        -model: PhoneModel
+        +KeyPad(model: PhoneModel)
+        +simulateKeyPresses(numKeyPresses: int) void
+    }
+    
+    class Main {
+        +main(args: String[]) void$
+    }
+
+    PhoneModel o-- Observer 
+    Screen --> PhoneModel
+    KeyPad --> PhoneModel 
+    Screen ..|> Observer
+    Main ..> PhoneModel
+    Main ..> Screen
+    Main ..> KeyPad
+```
+
 ### Mapeamento do Padrão:
 - **Observer (`Observer`):** A interface que define o contrato para os observadores. Contém o método `update(int newDigit)` que é acionado para notificar o recebimento de uma atualização.
 - **Subject / Observable (`PhoneModel`):** O modelo que armazena os dígitos do número de telefone. Atua como o publicador, mantendo uma lista de observadores registrados e os notificando ativamente a cada novo dígito inserido no teclado.
